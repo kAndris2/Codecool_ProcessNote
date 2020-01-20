@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Xml;
 
 namespace ProcessNote
 {
@@ -27,6 +28,30 @@ namespace ProcessNote
                 text += "</Tasks>";
                 File.WriteAllText(filename, text);
             }
+        }
+        public List<string> ReadXML(string filname)
+        {
+            XmlTextReader reader = new XmlTextReader("Sample.xml");
+            List<string> properties = new List<string>();
+            
+            while (reader.Read())
+            {
+                switch (reader.NodeType)
+                {
+                    case XmlNodeType.Element:
+                        break;
+
+
+                    case XmlNodeType.Text:
+                        properties.Add(reader.Value);
+
+
+                        break;
+                    case XmlNodeType.EndElement:
+                        break;
+                }
+            }
+            return properties;
         }
     }
 }
