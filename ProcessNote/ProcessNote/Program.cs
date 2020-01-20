@@ -82,7 +82,6 @@ namespace ProcessNote
 
         public static void TaskManager()
         {
-            var memory = 0.0;
             Process[] processes = Process.GetProcesses();
             foreach (Process item in processes)
             {
@@ -98,15 +97,11 @@ namespace ProcessNote
                 else
                     Console.WriteLine(PrintProcess(item));
             }
-            //memory = Math.Round(proc.PrivateMemorySize64 / 1e+6, 2);
-            //Console.WriteLine(proc.ProcessName + " Threads.Count=" + proc.Threads.Count + " Id=" + proc.Id);
-            //Console.WriteLine(proc.Id.ToString());
         }
 
         public static string PrintProcess(Process proc)
         {
-            var memory = 0.0;
-            memory = Math.Round(proc.PrivateMemorySize64 / 1e+6, 2);
+            var memory = Math.Round(proc.PrivateMemorySize64 / 1e+6, 2);
             return $"{proc.Id} - {proc.ProcessName} - RAM:{memory}%";
         }
     }

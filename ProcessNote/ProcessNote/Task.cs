@@ -14,7 +14,7 @@ namespace ProcessNote
         public string comment { get; set; }
         public string name { get; set; }
 
-        public Task()
+        public Task(List<string> table)
         {
 
         }
