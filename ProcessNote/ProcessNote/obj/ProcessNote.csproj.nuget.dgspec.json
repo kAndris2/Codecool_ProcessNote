@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\andri\\Desktop\\Codecool\\C#\\Benti\\ProcessNote\\ProcessNote\\ProcessNote\\ProcessNote.csproj": {}
+    "C:\\szobonyaerik\\csharp\\processNote\\ProcessNote\\ProcessNote\\ProcessNote.csproj": {}
   },
   "projects": {
-    "C:\\Users\\andri\\Desktop\\Codecool\\C#\\Benti\\ProcessNote\\ProcessNote\\ProcessNote\\ProcessNote.csproj": {
+    "C:\\szobonyaerik\\csharp\\processNote\\ProcessNote\\ProcessNote\\ProcessNote.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\andri\\Desktop\\Codecool\\C#\\Benti\\ProcessNote\\ProcessNote\\ProcessNote\\ProcessNote.csproj",
+        "projectUniqueName": "C:\\szobonyaerik\\csharp\\processNote\\ProcessNote\\ProcessNote\\ProcessNote.csproj",
         "projectName": "ProcessNote",
-        "projectPath": "C:\\Users\\andri\\Desktop\\Codecool\\C#\\Benti\\ProcessNote\\ProcessNote\\ProcessNote\\ProcessNote.csproj",
-        "packagesPath": "C:\\Users\\andri\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\andri\\Desktop\\Codecool\\C#\\Benti\\ProcessNote\\ProcessNote\\ProcessNote\\obj\\",
+        "projectPath": "C:\\szobonyaerik\\csharp\\processNote\\ProcessNote\\ProcessNote\\ProcessNote.csproj",
+        "packagesPath": "C:\\Users\\szobo\\.nuget\\packages\\",
+        "outputPath": "C:\\szobonyaerik\\csharp\\processNote\\ProcessNote\\ProcessNote\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\andri\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\szobo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
