@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProcessNote
 {
-    class Task
+    class Target
     {
         public float cpu { get; set; }
         public float ram { get; set; }
@@ -14,7 +14,7 @@ namespace ProcessNote
         public string comment { get; set; }
         public string name { get; set; }
 
-        public Task(List<string> table)
+        public Target(List<string> table)
         {
             name = table[0];
             //id = int.Parse(table[1]);

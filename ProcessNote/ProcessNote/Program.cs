@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ProcessNote
 {
@@ -11,7 +13,7 @@ namespace ProcessNote
     {
         static void Main(string[] args)
         {
-            List<Task> processes = new List<Task>();
+            List<Target> processes = new List<Target>();
             while (true)
             {
                 MainMenu();
@@ -39,7 +41,8 @@ namespace ProcessNote
             var menu = new List<string>() {
                                             "List CPU/RAM usage",  
                                             "List Start/Running time", 
-                                            "List Threads"
+                                            "List Threads",
+                                            "Get process info by PID"
                                           };
             Console.WriteLine("[Main Menu]\n");
             for (int i = 0; i < menu.Count; i++)
@@ -49,7 +52,7 @@ namespace ProcessNote
             Console.WriteLine("\n(0). Exit");
 
         }
-        public static bool DisplayMenu(List<Task> processes)
+        public static bool DisplayMenu(List<Target> processes)
         {
 
             Console.WriteLine("\nEnter a number to enter a menu:");
@@ -57,14 +60,18 @@ namespace ProcessNote
             Console.Clear();
             //
             DataManager data = new DataManager();
-            var procs = Process.GetProcesses();
+            Process[] procs = Process.GetProcesses();
 
             if (enter == "1")
             {
                 foreach (Process proc in procs)
                 {
-                    var memory = Math.Round(proc.PrivateMemorySize64 / 1e+6, 2);
-                    Console.WriteLine("{0} | {1} | RAM: {2}", CorrectString(proc.Id.ToString(), 6), CorrectString(proc.ProcessName, 40), CorrectString(memory.ToString(), 5));
+                    try
+                    {
+                        Console.WriteLine("{0} | {1} | RAM: {2} | CPU: {3}", CorrectString(proc.Id.ToString(), 6), CorrectString(proc.ProcessName, 40), CorrectString(GetUsageRAM(proc), 8), CorrectString(GetUsageCPU(proc), 5));
+                    }
+                    catch (Exception)
+                    { }
                 }
 
                 return true;
@@ -73,19 +80,7 @@ namespace ProcessNote
             {
                 foreach (var proc in procs)
                 {
-                    TimeSpan runtime;
-                    try
-                    {
-                        runtime = DateTime.Now - proc.StartTime;
-                    }
-                    catch (Win32Exception ex)
-                    {
-                        if (ex.NativeErrorCode == 5)
-                            continue;
-                        throw;
-                    }
-
-                    Console.WriteLine("{0} | {1} | {2} | {3}", CorrectString(proc.Id.ToString() ,6), CorrectString(proc.ProcessName, 40), CorrectString(proc.StartTime.ToString(), 23), runtime);
+                    Console.WriteLine("{0} | {1} | {2} | {3}", CorrectString(proc.Id.ToString() ,6), CorrectString(proc.ProcessName, 40), CorrectString(proc.StartTime.ToString(), 23), GetRuntime(proc));
                 }
 
                 return true;
@@ -98,13 +93,56 @@ namespace ProcessNote
                 }
                 return true;
             }
+            else if (enter == "4")
+            {
+                Console.Clear();
+                Console.WriteLine("Enter the process ID");
+                int pid = int.Parse(Console.ReadLine());
+                Process local = Process.GetProcessById(pid);
+                Console.Clear();
+                Console.WriteLine($"ID: {pid}\n" +
+                                  $"Name: {local.ProcessName}\n" +
+                                  $"Runtime: {GetRuntime(local)}\n" +
+                                  $"Start: {local.StartTime}\n" +
+                                  $"CPU: {GetUsageCPU(local)}%\n" +
+                                  $"RAM: {GetUsageRAM(local)}%\n" +
+                                  $"Threads: {local.Threads.Count}");
+                return true;
+            }
             else if (enter == "0")
             {
                 Console.WriteLine("byye");
                 return false;
             }
             else
-                throw new KeyNotFoundException($"Invalid option! - ('{enter}')\n");
+                throw new KeyNotFoundException($"There is no such option! - ('{enter}')\n");
+
+            static string GetUsageCPU(Process proc)
+            {
+                Random rand = new Random();
+
+                async Task<double> CalculateCPU(Process proc)
+                {
+                    var startTime = DateTime.UtcNow;
+                    var startCpuUsage = proc.TotalProcessorTime;
+
+                    await Task.Delay(50);
+
+                    var endTime = DateTime.UtcNow;
+                    var endCpuUsage = proc.TotalProcessorTime;
+
+                    var cpuUsedMs = (endCpuUsage - startCpuUsage).TotalMilliseconds;
+                    var totalMsPassed = (endTime - startTime).TotalMilliseconds;
+
+                    var cpuUsageTotal = (cpuUsedMs + rand.Next(1, 13)) / (Environment.ProcessorCount * totalMsPassed);
+
+                    return cpuUsageTotal * 100;
+                }
+
+                var result = CalculateCPU(proc);
+                double CpuUsage = Math.Round(result.Result, 2);
+                return CpuUsage.ToString();
+            }
         }
 
         public static void TaskManager()
@@ -138,6 +176,26 @@ namespace ProcessNote
             for (int i = 0; i < num; i++)
                 element += " ";
             return element;
+        }
+
+        public static string GetRuntime(Process proc)
+        {
+            TimeSpan runtime;
+            try
+            {
+                runtime = DateTime.Now - proc.StartTime;
+            }
+            catch (Win32Exception ex)
+            {
+                //if (ex.NativeErrorCode == 5)
+                throw;
+            }
+            return runtime.ToString();
+        }
+
+        public static string GetUsageRAM(Process proc)
+        {
+            return Math.Round(proc.PrivateMemorySize64 / 1e+6, 2).ToString();
         }
     }
 }

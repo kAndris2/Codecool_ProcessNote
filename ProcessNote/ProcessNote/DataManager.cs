@@ -8,13 +8,13 @@ namespace ProcessNote
 {
     class DataManager
     {
-        public void WriteXML(string filename, List<Task> tasks)
+        public void WriteXML(string filename, List<Target> tasks)
         {
             string text = "";
             if (tasks.Count >= 1)
             {
                 text += "<Tasks>\n";
-                foreach (Task task in tasks)
+                foreach (Target task in tasks)
                 {
                     text += $"\t<{task.name}>\n";
                     text += $"\t\t<ID>{task.id}</ID>\n" +
