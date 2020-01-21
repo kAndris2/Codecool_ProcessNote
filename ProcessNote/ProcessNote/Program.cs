@@ -80,7 +80,12 @@ namespace ProcessNote
             {
                 foreach (var proc in procs)
                 {
-                    Console.WriteLine("{0} | {1} | {2} | {3}", CorrectString(proc.Id.ToString() ,6), CorrectString(proc.ProcessName, 40), CorrectString(proc.StartTime.ToString(), 23), GetRuntime(proc));
+                    try
+                    {
+                        Console.WriteLine("{0} | {1} | {2} | {3}", CorrectString(proc.Id.ToString(), 6), CorrectString(proc.ProcessName, 40), CorrectString(proc.StartTime.ToString(), 23), GetRuntime(proc));
+                    }
+                    catch (Exception)
+                    { }
                 }
 
                 return true;
