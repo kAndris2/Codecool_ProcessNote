@@ -16,22 +16,22 @@ namespace ProcessNote
                 text += "<Tasks>\n";
                 foreach (Task task in tasks)
                 {
-                    text += $"<{task.name}>\n";
-                    text += $"\t<ID>{task.id}</ID>\n" +
-                            $"\t<CPU>{task.cpu}</CPU>\n" +
-                            $"\t<RAM>{task.ram}</RAM>\n" +
-                            $"\t<Runtime>{task.runtime}</Runtime>\n" +
-                            $"\t<StartTime>{task.start}</StartTime>\n" +
-                            $"\t<Comment>{task.comment}</Comment>";
-                    text += $"</{task.name}>\n";
+                    text += $"\t<{task.name}>\n";
+                    text += $"\t\t<ID>{task.id}</ID>\n" +
+                            $"\t\t<CPU>{task.cpu}</CPU>\n" +
+                            $"\t\t<RAM>{task.ram}</RAM>\n" +
+                            $"\t\t<Runtime>{task.runtime}</Runtime>\n" +
+                            $"\t\t<StartTime>{task.start}</StartTime>\n" +
+                            $"\t\t<Comment>{task.comment}</Comment>\n";
+                    text += $"\t</{task.name}>\n";
                 }
                 text += "</Tasks>";
                 File.WriteAllText(filename, text);
             }
         }
-        public List<string> ReadXML(string filname)
+        public List<string> ReadXML(string filename)
         {
-            XmlTextReader reader = new XmlTextReader("Sample.xml");
+            XmlTextReader reader = new XmlTextReader(filename);
             List<string> properties = new List<string>();
             
             while (reader.Read())

@@ -9,74 +9,79 @@ namespace ProcessNote
     {
         static void Main(string[] args)
         {
-            TaskManager();
-            /*
             while (true)
             {
                 MainMenu();
-                if (!DisplayMenu())
-                    break;
+                try
+                {
+                    if (!DisplayMenu())
+                        break;
+                }
+                catch (KeyNotFoundException e)
+                {
+                    Console.Clear();
+                    Console.WriteLine("[ERROR]: " + e.Message);
+                }
             }
-            */
         }
 
         public static void MainMenu()
         {
-            int menuNumber = 1;
-            List<string> menu = new List<string>() { "List CPU usage", "List  Memory usage", "List Running time", "List Start time", "List Threads", "Exit" };
-            Console.WriteLine("Main Menu");
-
-
+            var menu = new List<string>() {
+                                            "List CPU usage", 
+                                            "List  Memory usage", 
+                                            "List Running time", 
+                                            "List Start time", 
+                                            "List Threads"
+                                          };
+            Console.WriteLine("[Main Menu]\n");
+            for (int i = 0; i < menu.Count; i++)
             {
-                foreach (string options in menu)
-                {
-                    Console.WriteLine("({0}) {1}", menuNumber, options);
-                    menuNumber++;
-
-                }
+                Console.WriteLine("({0}). {1}", i+1, menu[i]);
             }
+            Console.WriteLine("\n(0). Exit");
 
         }
         public static bool DisplayMenu()
         {
 
-            Console.Write("Enter a number to enter a menu: ");
-            int enter = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("\nEnter a number to enter a menu:");
+            string enter = Console.ReadLine();
             Console.Clear();
 
-            if (enter == 1)
+            if (enter == "1")
             {
                 Console.WriteLine("cpu");
                 return true;
             }
-            else if (enter == 2)
+            else if (enter =="2")
             {
                 Console.WriteLine("memory");
                 return true;
             }
-            else if (enter == 3)
+            else if (enter == "3")
             {
                 Console.WriteLine("running time");
                 return true;
             }
-            else if (enter == 4)
+            else if (enter == "4")
             {
                 Console.WriteLine("start");
                 return true;
             }
-            else if (enter == 5)
+            else if (enter == "5")
             {
                 Console.WriteLine("thread");
                 return true;
             }
-            else if (enter == 6)
+            else if (enter == "0")
             {
                 Console.WriteLine("byye");
                 return false;
             }
             else
             {
-                throw new KeyNotFoundException("Wrong number");
+                throw new KeyNotFoundException($"Invalid option! - ('{enter}')\n");
             }
         }
 

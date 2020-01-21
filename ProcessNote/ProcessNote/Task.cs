@@ -16,7 +16,13 @@ namespace ProcessNote
 
         public Task(List<string> table)
         {
-
+            name = table[0];
+            id = int.Parse(table[1]);
+            cpu = double.Parse(table[2]);
+            ram = double.Parse(table[3]);
+            runtime = int.Parse(table[4]);
+            start = table[5];
+            comment = table[6];
         }
     }
 }
