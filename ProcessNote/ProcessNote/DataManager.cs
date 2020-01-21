@@ -8,10 +8,10 @@ namespace ProcessNote
 {
     class DataManager
     {
-        public void WriteXML(string filename, Task[] tasks)
+        public void WriteXML(string filename, List<Task> tasks)
         {
             string text = "";
-            if (tasks.Length >= 1)
+            if (tasks.Count >= 1)
             {
                 text += "<Tasks>\n";
                 foreach (Task task in tasks)

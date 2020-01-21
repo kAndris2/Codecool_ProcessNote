@@ -9,12 +9,13 @@ namespace ProcessNote
     {
         static void Main(string[] args)
         {
+            List<Task> processes = new List<Task>();
             while (true)
             {
                 MainMenu();
                 try
                 {
-                    if (!DisplayMenu())
+                    if (!DisplayMenu(processes))
                         break;
                 }
                 catch (KeyNotFoundException e)
@@ -42,21 +43,47 @@ namespace ProcessNote
             Console.WriteLine("\n(0). Exit");
 
         }
-        public static bool DisplayMenu()
+        public static bool DisplayMenu(List<Task> processes)
         {
 
             Console.WriteLine("\nEnter a number to enter a menu:");
             string enter = Console.ReadLine();
             Console.Clear();
+            DataManager data = new DataManager();
 
             if (enter == "1")
             {
-                Console.WriteLine("cpu");
+                List<string> array = new List<string> { 
+                                                "Jóska_process.dll",
+                                                "700",
+                                                "12,3",
+                                                "11,1",
+                                                "302",
+                                                "509",
+                                                "Elcsúsztam a tyúxaron!"
+                                              };
+                Task task = new Task(array);
+                Task task1 = new Task(array);
+                List<Task> procs = new List<Task>();
+                procs.Add(task);
+                procs.Add(task1);
+
+                data.WriteXML("Try.xml", procs);
                 return true;
             }
-            else if (enter =="2")
+            else if (enter == "2")
             {
-                Console.WriteLine("memory");
+                List<string> table = data.ReadXML("Try.xml");
+                foreach (string item in table)
+                    Console.WriteLine(item);
+
+                /*
+                processes.Add(new Task(table));
+                foreach (Task task in processes)
+                {
+                    Console.WriteLine(task.id + " " + task.name);
+                }
+                */
                 return true;
             }
             else if (enter == "3")
