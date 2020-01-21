@@ -8,7 +8,7 @@ namespace ProcessNote
     {
         public float cpu { get; set; }
         public float ram { get; set; }
-        public int runtime { get; set; }
+        public string runtime { get; set; }
         public string id { get; set; }
         public string start { get; set; }
         public string comment { get; set; }
@@ -21,7 +21,7 @@ namespace ProcessNote
             id = table[1];
             cpu = float.Parse(table[2]);
             ram = float.Parse(table[3]);
-            runtime = int.Parse(table[4]);
+            runtime = table[4];
             start = table[5];
             comment = table[6];
         }
