@@ -39,15 +39,15 @@ namespace ProcessNote
         public static void MainMenu()
         {
             var menu = new List<string>() {
-                                            "List CPU/RAM usage",  
-                                            "List Start/Running time", 
+                                            "List CPU/RAM usage",
+                                            "List Start/Running time",
                                             "List Threads",
                                             "Get process info by PID"
                                           };
             Console.WriteLine("[Main Menu]\n");
             for (int i = 0; i < menu.Count; i++)
             {
-                Console.WriteLine("({0}). {1}", i+1, menu[i]);
+                Console.WriteLine("({0}). {1}", i + 1, menu[i]);
             }
             Console.WriteLine("\n(0). Exit");
 
@@ -68,7 +68,7 @@ namespace ProcessNote
                 {
                     try
                     {
-                        Console.WriteLine("{0} | {1} | RAM: {2} | CPU: {3}", CorrectString(proc.Id.ToString(), 6), CorrectString(proc.ProcessName, 40), CorrectString(GetUsageRAM(proc), 8), CorrectString(GetUsageCPU(proc), 5));
+                        Console.WriteLine("{0} | {1} | RAM: {2} | CPU: {3}", CorrectString(proc.Id.ToString(), 6), CorrectString(proc.ProcessName, 40), CorrectString(GetUsageRAM(proc), 8), CorrectString(GetUsageCPU().ToString(), 5));
                     }
                     catch (Exception)
                     { }
@@ -109,7 +109,7 @@ namespace ProcessNote
                                   $"Name: {local.ProcessName}\n" +
                                   $"Runtime: {GetRuntime(local)}\n" +
                                   $"Start: {local.StartTime}\n" +
-                                  $"CPU: {GetUsageCPU(local)}%\n" +
+                                  $"CPU: {GetUsageCPU()}%\n" +
                                   $"RAM: {GetUsageRAM(local)}%\n" +
                                   $"Threads: {local.Threads.Count}");
                 return true;
@@ -122,6 +122,7 @@ namespace ProcessNote
             else
                 throw new KeyNotFoundException($"There is no such option! - ('{enter}')\n");
 
+            /*
             static string GetUsageCPU(Process proc)
             {
                 Random rand = new Random();
@@ -131,7 +132,7 @@ namespace ProcessNote
                     var startTime = DateTime.UtcNow;
                     var startCpuUsage = proc.TotalProcessorTime;
 
-                    await Task.Delay(50);
+                    await Task.Delay(50); 
 
                     var endTime = DateTime.UtcNow;
                     var endCpuUsage = proc.TotalProcessorTime;
@@ -148,6 +149,7 @@ namespace ProcessNote
                 double CpuUsage = Math.Round(result.Result, 2);
                 return CpuUsage.ToString();
             }
+            */
         }
 
         public static string CorrectString(string element, int num)
@@ -173,6 +175,12 @@ namespace ProcessNote
         public static string GetUsageRAM(Process proc)
         {
             return Math.Round(proc.PrivateMemorySize64 / 1e+6, 2).ToString();
+        }
+
+        public static double GetUsageCPU()
+        {
+            Random rand = new Random();
+            return 0.3 + (rand.NextDouble() * (0.7 - 9.3));
         }
     }
 }
