@@ -13,7 +13,14 @@ namespace ProcessNote
     {
         static void Main(string[] args)
         {
-            List<Target> processes = new List<Target>();
+            string FILENAME = "Try.xml";
+            DataManager data = new DataManager();
+            List<Target> processes = MakeInstances();
+            foreach(Target proc in processes)
+            {
+                Console.WriteLine(proc.Name);
+            }
+            /*
             while (true)
             {
                 MainMenu();
@@ -34,6 +41,7 @@ namespace ProcessNote
                     Console.WriteLine("[ERROR]: " + e.Message);
                 }
             }
+            */
         }
 
         public static void MainMenu()
@@ -42,7 +50,8 @@ namespace ProcessNote
                                             "List CPU/RAM usage",
                                             "List Start/Running time",
                                             "List Threads",
-                                            "Get process info by PID"
+                                            "Get process info by PID",
+                                            "Give comment to a process"
                                           };
             Console.WriteLine("[Main Menu]\n");
             for (int i = 0; i < menu.Count; i++)
@@ -114,6 +123,23 @@ namespace ProcessNote
                                   $"Threads: {local.Threads.Count}");
                 return true;
             }
+            else if (enter == "5")
+            {
+                Console.Clear();
+                Console.WriteLine("Enter the process ID:");
+                int id = int.Parse(Console.ReadLine());
+                Console.WriteLine("\nEnter the comment:");
+                foreach(Target proc in processes)
+                {
+                    if (proc.ID.Equals(id))
+                    {
+                        proc.Comment = Console.ReadLine();
+                        break;
+                    }
+                }
+
+                return true;
+            }
             else if (enter == "0")
             {
                 Console.WriteLine("byye");
@@ -167,7 +193,7 @@ namespace ProcessNote
             {
                 runtime = DateTime.Now - proc.StartTime;
             }
-            catch (Win32Exception) { throw; }
+            catch (Win32Exception) { return "- Unknown -"; }
 
             return runtime.ToString();
         }
@@ -181,6 +207,36 @@ namespace ProcessNote
         {
             Random rand = new Random();
             return 0.3 + (rand.NextDouble() * (0.7 - 9.3));
+        }
+
+        public static List<Target> MakeInstances()
+        {
+            List<Target> targets = new List<Target>();
+            Process[] processes = Process.GetProcesses();
+
+            foreach (Process proc in processes)
+            {
+                List<string> temp = new List<string>();
+                temp.Add(proc.Id.ToString());
+                temp.Add(proc.ProcessName);
+                try
+                {
+                    temp.Add(proc.StartTime.ToString());
+                }
+                catch (Exception)
+                {
+                    temp.Add("- Unknown -");
+                }
+                temp.Add(GetRuntime(proc));
+                temp.Add(proc.Threads.Count.ToString());
+                temp.Add(GetUsageRAM(proc));
+                temp.Add(GetUsageCPU().ToString());
+                temp.Add("$$"); //Comment!
+
+                targets.Add(new Target(temp));
+            }
+
+            return targets;
         }
     }
 }

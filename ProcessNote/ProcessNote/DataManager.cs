@@ -9,6 +9,7 @@ namespace ProcessNote
 {
     class DataManager
     {
+        /*
         public void WriteXML(string filename, List<Target> tasks)
         {
             string text = "";
@@ -54,7 +55,9 @@ namespace ProcessNote
             }
             return properties;
         }
-        public void WriterTwo(string filename, Target[] tasks)
+        */
+
+        public void XmlWriter(string filename, Target[] tasks)
         {
             XmlSerializer writer = new XmlSerializer(typeof(Target[]));
 
@@ -64,7 +67,7 @@ namespace ProcessNote
             }
         }
 
-        public List<string> ReadTwo(string filename)
+        public List<string> XmlReader(string filename)
         {
             List<string> processProperties = new List<string>();
             XmlSerializer reader = new XmlSerializer(typeof(List<Target>));
