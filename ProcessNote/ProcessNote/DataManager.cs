@@ -34,7 +34,7 @@ namespace ProcessNote
         {
             XmlTextReader reader = new XmlTextReader(filename);
             List<string> properties = new List<string>();
-            
+
             while (reader.Read())
             {
                 switch (reader.NodeType)
@@ -54,27 +54,33 @@ namespace ProcessNote
             }
             return properties;
         }
-        public void WriterTwo(string filename,Target task)
+        public void WriterTwo(string filename, Target[] tasks)
         {
-            XmlSerializer writer = new XmlSerializer(typeof(Target));
+            XmlSerializer writer = new XmlSerializer(typeof(Target[]));
 
             using (TextWriter writerfinal = new StreamWriter(filename))
             {
-                writer.Serialize(writerfinal, task);
+                writer.Serialize(writerfinal, tasks);
             }
         }
 
         public List<string> ReadTwo(string filename)
         {
             List<string> processProperties = new List<string>();
-            XmlSerializer reader = new XmlSerializer(typeof(Target));
+            XmlSerializer reader = new XmlSerializer(typeof(List<Target>));
 
-            Target i;
+            List<Target> i;
 
-            using (StreamReader readfile = new FileStream(filename,FileAccess.Read))
+            using (FileStream readfile = File.OpenRead(filename))
             {
-                i = (Target)reader.Deserialize(readfile);
+                i = (List<Target>)reader.Deserialize(readfile);
             }
+            foreach (Target a in i)
+            {
+                a.ToString();
+                processProperties.Add(a.ToString());
+            }
+            return processProperties;
 
         }
     }
