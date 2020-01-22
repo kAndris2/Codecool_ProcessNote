@@ -15,12 +15,13 @@ namespace ProcessNote
         {
             string FILENAME = "Try.xml";
             DataManager data = new DataManager();
-            List<Target> processes = MakeInstances();
-            foreach(Target proc in processes)
-            {
-                Console.WriteLine(proc.Name);
-            }
-            
+            List<Target> processes = new List<Target>();
+
+            Console.WriteLine("(1). Online\n(2). Offline\n\nChoose the mode:");
+            if (Console.ReadLine() == "1")
+                processes = MakeInstances();
+
+            Console.Clear();
             while (true)
             {
                 MainMenu();
@@ -41,7 +42,6 @@ namespace ProcessNote
                     Console.WriteLine("[ERROR]: " + e.Message);
                 }
             }
-            
         }
 
         public static void MainMenu()
@@ -51,8 +51,7 @@ namespace ProcessNote
                                             "List Start/Running time",
                                             "List Threads",
                                             "Get process info by PID",
-                                            "Give comment to a process",
-                                            "Save datas in file"
+                                            "Give comment to a process"
                                           };
             Console.WriteLine("[Main Menu]\n");
             for (int i = 0; i < menu.Count; i++)
@@ -130,7 +129,7 @@ namespace ProcessNote
                 Console.WriteLine("Enter the process ID:");
                 int id = int.Parse(Console.ReadLine());
                 Console.WriteLine("\nEnter the comment:");
-                foreach (Target proc in processes)
+                foreach(Target proc in processes)
                 {
                     if (proc.ID.Equals(id))
                     {
@@ -138,36 +137,13 @@ namespace ProcessNote
                         break;
                     }
                 }
+
                 return true;
             }
             else if (enter == "0")
             {
                 Console.WriteLine("byye");
                 return false;
-            }
-            else if (enter == "6")
-            {
-                Target[] change = new Target[processes.Count];
-                for (int i = 0; i < processes.Count; i++)
-                {
-                    change[i] = processes[i];
-                }
-                data.XmlWriter("Test.xml", change);
-                Console.WriteLine("All DATAS SAVED!!!");
-                return true;
-
-            }
-            else if (enter == "7")
-            {
-                foreach (string a in data.XmlReader("Test.xml"))
-                {
-                    Console.WriteLine(a);
-                }
-                  
-                
-                    
-                
-                return true;
             }
             else
                 throw new KeyNotFoundException($"There is no such option! - ('{enter}')\n");
@@ -239,7 +215,6 @@ namespace ProcessNote
             Process[] processes = Process.GetProcesses();
 
             foreach (Process proc in processes)
-
             {
                 List<string> temp = new List<string>();
                 temp.Add(proc.Id.ToString());
