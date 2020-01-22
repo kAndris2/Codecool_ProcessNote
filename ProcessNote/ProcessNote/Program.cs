@@ -55,7 +55,7 @@ namespace ProcessNote
         public static bool DisplayMenu(List<Target> processes)
         {
 
-            Console.WriteLine("\nEnter a number to enter a menu:");
+            Console.WriteLine("\nChoose an option to enter a menu:");
             string enter = Console.ReadLine();
             Console.Clear();
             //
@@ -150,34 +150,9 @@ namespace ProcessNote
             }
         }
 
-        public static void TaskManager()
-        {
-            Process[] processes = Process.GetProcesses();
-            foreach (Process item in processes)
-            {
-                if (item.Threads.Count > 1)
-                {
-                    Console.WriteLine("> " + PrintProcess(item));
-                    Process[] localByName = Process.GetProcessesByName(item.ProcessName);
-                    foreach (Process proc in localByName)
-                    {
-                        Console.WriteLine("\t" + PrintProcess(proc));
-                    }
-                }
-                else
-                    Console.WriteLine(PrintProcess(item));
-            }
-        }
-
-        public static string PrintProcess(Process proc)
-        {
-            var memory = Math.Round(proc.PrivateMemorySize64 / 1e+6, 2);
-            return $"{proc.Id} - {proc.ProcessName} - RAM:{memory}%";
-        }
-
         public static string CorrectString(string element, int num)
         {
-            num = num - element.Length;
+            num -= element.Length;
             for (int i = 0; i < num; i++)
                 element += " ";
             return element;
@@ -190,11 +165,8 @@ namespace ProcessNote
             {
                 runtime = DateTime.Now - proc.StartTime;
             }
-            catch (Win32Exception ex)
-            {
-                //if (ex.NativeErrorCode == 5)
-                throw;
-            }
+            catch (Win32Exception) { throw; }
+
             return runtime.ToString();
         }
 

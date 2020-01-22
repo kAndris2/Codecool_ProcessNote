@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace ProcessNote
 {
@@ -52,6 +53,29 @@ namespace ProcessNote
                 }
             }
             return properties;
+        }
+        public void WriterTwo(string filename,Target task)
+        {
+            XmlSerializer writer = new XmlSerializer(typeof(Target));
+
+            using (TextWriter writerfinal = new StreamWriter(filename))
+            {
+                writer.Serialize(writerfinal, task);
+            }
+        }
+
+        public List<string> ReadTwo(string filename)
+        {
+            List<string> processProperties = new List<string>();
+            XmlSerializer reader = new XmlSerializer(typeof(Target));
+
+            Target i;
+
+            using (StreamReader readfile = new FileStream(filename,FileAccess.Read))
+            {
+                i = (Target)reader.Deserialize(readfile);
+            }
+
         }
     }
 }
