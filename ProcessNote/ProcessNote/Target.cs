@@ -30,5 +30,9 @@ namespace ProcessNote
         public Target()
         {
         }
+        public override string ToString()
+        {
+            return String.Format("{0} {1} {2} {3} {4} {5} {6}", ID, Name, Start, Runtime, Threads, RAM, CPU, Comment);
+        }
     }
 }

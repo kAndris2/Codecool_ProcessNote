@@ -154,7 +154,7 @@ namespace ProcessNote
             }
             else if (enter == "7")
             {
-                foreach (string a in data.XmlReader("Test.xml"))
+                foreach (Target a in data.XmlReader("Test.xml"))
                 {
                     Console.WriteLine(a);
                 }

@@ -67,24 +67,16 @@ namespace ProcessNote
             }
         }
 
-        public List<string> XmlReader(string filename)
+        public List<Target> XmlReader(string filename)
         {
-            List<string> processProperties = new List<string>();
             XmlSerializer reader = new XmlSerializer(typeof(List<Target>));
-
             List<Target> i;
-
             using (FileStream readfile = File.OpenRead(filename))
             {
                 i = (List<Target>)reader.Deserialize(readfile);
             }
-            foreach (Target a in i)
-            {
-                a.ToString();
-                processProperties.Add(a.ToString());
-            }
-            return processProperties;
-
+            return i;
         }
+
     }
 }
