@@ -129,7 +129,7 @@ namespace ProcessNote
                 Console.WriteLine("Enter the process ID:");
                 int id = int.Parse(Console.ReadLine());
                 Console.WriteLine("\nEnter the comment:");
-                foreach(Target proc in processes)
+                foreach (Target proc in processes)
                 {
                     if (proc.ID.Equals(id))
                     {
@@ -139,6 +139,32 @@ namespace ProcessNote
                 }
 
                 return true;
+            }
+            else if (enter == "6")
+            {
+                Target[] change = new Target[processes.Count];
+                for (int i = 0; i < processes.Count; i++)
+                {
+                    change[i] = processes[i];
+                }
+                data.XmlWriter("Test.xml", change);
+                Console.WriteLine("All DATAS SAVED!!!");
+                return true;
+
+            }
+            else if (enter == "7")
+            {
+                foreach (string a in data.XmlReader("Test.xml"))
+                {
+                    Console.WriteLine(a);
+                }
+
+
+
+
+                return true;
+
+
             }
             else if (enter == "0")
             {
