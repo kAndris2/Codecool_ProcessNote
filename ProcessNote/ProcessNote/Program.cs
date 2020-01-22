@@ -132,7 +132,7 @@ namespace ProcessNote
                     var startTime = DateTime.UtcNow;
                     var startCpuUsage = proc.TotalProcessorTime;
 
-                    await Task.Delay(50);
+                    await Task.Delay(50); 
 
                     var endTime = DateTime.UtcNow;
                     var endCpuUsage = proc.TotalProcessorTime;
