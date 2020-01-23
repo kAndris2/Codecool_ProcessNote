@@ -13,14 +13,33 @@ namespace ProcessNote
     {
         static void Main(string[] args)
         {
-            string FILENAME = "Try.xml";
-            DataManager data = new DataManager();
             List<Target> processes = new List<Target>();
 
-            Console.WriteLine("(1). Online\n(2). Offline\n\nChoose the mode:");
-            if (Console.ReadLine() == "1")
-                processes = MakeInstances();
+            //-Mode----------------------------------------------------------------------
+            while (true)
+            {
+                ChooseMenu();
+                try
+                {
+                    if (!Choose(processes))
+                        break;
+                }
+                catch (KeyNotFoundException e)
+                {
+                    Console.Clear();
+                    Console.WriteLine("[ERROR]: " + e.Message);
+                }
+                catch (FileNotFoundException e)
+                {
+                    Console.Clear();
+                    Console.WriteLine("[ERROR]: " + e.Message);
+                    Console.WriteLine("\tThe online mode started automatically.\n");
+                    processes = MakeInstances();
+                    break;
+                }
+            }
 
+            //-MainMenu-----------------------------------------------------------------
             Console.Clear();
             while (true)
             {
@@ -44,6 +63,42 @@ namespace ProcessNote
             }
         }
 
+        public static void ChooseMenu()
+        {
+            var options = new List<string> { "Online", "Offline" };
+            for (int i = 0; i < options.Count; i++)
+                Console.WriteLine($"({i + 1}). {options[i]}");
+            Console.WriteLine("\n(0). Exit");
+        }
+
+        public static bool Choose(List<Target> processes)
+        {
+            string FILENAME = "Test.xml";
+            Console.WriteLine("\n[Choose the mode]:");
+            string input = Console.ReadLine();
+            DataManager data = new DataManager();
+
+            if (input == "1")
+            {
+                processes.AddRange(MakeInstances());
+            }
+            else if (input == "2")
+            {
+                if (File.Exists(FILENAME))
+                    processes.AddRange(data.XmlReader(FILENAME));
+                else
+                    throw new FileNotFoundException($"File Not found! ('{FILENAME}')");
+            }
+            else if (input == "0")
+            {
+                Environment.Exit(-1);
+                return true;
+            }
+            else
+                throw new KeyNotFoundException($"There is no such option! ('{input}')\n");
+            return false;
+        }
+
         public static void MainMenu()
         {
             var menu = new List<string>() {
@@ -51,7 +106,8 @@ namespace ProcessNote
                                             "List Start/Running time",
                                             "List Threads",
                                             "Get process info by PID",
-                                            "Give comment to a process"
+                                            "Give comment to a process",
+                                            "Save" //Ezt csak online módban kell engedni!
                                           };
             Console.WriteLine("[Main Menu]\n");
             for (int i = 0; i < menu.Count; i++)
@@ -64,20 +120,20 @@ namespace ProcessNote
         public static bool DisplayMenu(List<Target> processes)
         {
 
-            Console.WriteLine("\nChoose an option to enter a menu:");
+            Console.WriteLine($"\nChoose an option to enter a menu:{processes.Count}");
             string enter = Console.ReadLine();
+            string FILENAME = "Test.xml";
             Console.Clear();
             //
             DataManager data = new DataManager();
-            Process[] procs = Process.GetProcesses();
 
             if (enter == "1")
             {
-                foreach (Process proc in procs)
+                foreach (Target proc in processes)
                 {
                     try
                     {
-                        Console.WriteLine("{0} | {1} | RAM: {2} | CPU: {3}", CorrectString(proc.Id.ToString(), 6), CorrectString(proc.ProcessName, 40), CorrectString(GetUsageRAM(proc), 8), CorrectString(GetUsageCPU().ToString(), 5));
+                        Console.WriteLine("{0} | {1} | RAM: {2} | CPU: {3}", CorrectString(proc.ID.ToString(), 6), CorrectString(proc.Name, 40), CorrectString(proc.RAM.ToString(), 8), CorrectString(proc.CPU.ToString(), 5));
                     }
                     catch (Exception)
                     { }
@@ -87,11 +143,11 @@ namespace ProcessNote
             }
             else if (enter == "2")
             {
-                foreach (var proc in procs)
+                foreach (Target proc in processes)
                 {
                     try
                     {
-                        Console.WriteLine("{0} | {1} | {2} | {3}", CorrectString(proc.Id.ToString(), 6), CorrectString(proc.ProcessName, 40), CorrectString(proc.StartTime.ToString(), 23), GetRuntime(proc));
+                        Console.WriteLine("{0} | {1} | {2} | {3}", CorrectString(proc.ID.ToString(), 6), CorrectString(proc.Name, 40), CorrectString(proc.Start, 23), proc.Runtime);
                     }
                     catch (Exception)
                     { }
@@ -101,9 +157,9 @@ namespace ProcessNote
             }
             else if (enter == "3")
             {
-                foreach (Process proc in procs)
+                foreach (Target proc in processes)
                 {
-                    Console.WriteLine("{0} | {1} | {2}", CorrectString(proc.Id.ToString(), 6), CorrectString(proc.ProcessName, 40), CorrectString(proc.Threads.Count.ToString(), 4));
+                    Console.WriteLine("{0} | {1} | {2}", CorrectString(proc.ID.ToString(), 6), CorrectString(proc.Name, 40), CorrectString(proc.Threads.ToString(), 4));
                 }
                 return true;
             }
@@ -112,15 +168,23 @@ namespace ProcessNote
                 Console.Clear();
                 Console.WriteLine("Enter the process ID");
                 int pid = int.Parse(Console.ReadLine());
-                Process local = Process.GetProcessById(pid);
                 Console.Clear();
-                Console.WriteLine($"ID: {pid}\n" +
-                                  $"Name: {local.ProcessName}\n" +
-                                  $"Runtime: {GetRuntime(local)}\n" +
-                                  $"Start: {local.StartTime}\n" +
-                                  $"CPU: {GetUsageCPU()}%\n" +
-                                  $"RAM: {GetUsageRAM(local)}%\n" +
-                                  $"Threads: {local.Threads.Count}");
+                foreach (Target proc in processes)
+                {
+                    if (pid.Equals(proc.ID))
+                    {
+                        Console.WriteLine($"ID: {proc.ID}\n" +
+                                      $"Name: {proc.Name}\n" +
+                                      $"Runtime: {proc.Runtime}\n" +
+                                      $"Start: {proc.Start}\n" +
+                                      $"CPU: {proc.CPU}%\n" +
+                                      $"RAM: {proc.RAM}%\n" +
+                                      $"Threads: {proc.Threads}\n" +
+                                      $"Comment: {proc.Comment}");
+                        break;
+                    }
+                }
+                
                 return true;
             }
             else if (enter == "5")
@@ -147,28 +211,13 @@ namespace ProcessNote
                 {
                     change[i] = processes[i];
                 }
-                data.XmlWriter("Test.xml", change);
+                data.XmlWriter(FILENAME, change);
                 Console.WriteLine("All DATAS SAVED!!!");
                 return true;
-
-            }
-            else if (enter == "7")
-            {
-                foreach (Target a in data.XmlReader("Test.xml"))
-                {
-                    Console.WriteLine(a);
-                }
-
-
-
-
-                return true;
-
-
             }
             else if (enter == "0")
             {
-                Console.WriteLine("byye");
+                Environment.Exit(-1);
                 return false;
             }
             else
@@ -219,7 +268,7 @@ namespace ProcessNote
             {
                 runtime = DateTime.Now - proc.StartTime;
             }
-            catch (Win32Exception) { return "- Unknown -"; }
+            catch (Exception) { return "- Unknown -"; }
 
             return runtime.ToString();
         }
@@ -232,7 +281,7 @@ namespace ProcessNote
         public static double GetUsageCPU()
         {
             Random rand = new Random();
-            return 0.3 + (rand.NextDouble() * (0.7 - 9.3));
+            return Math.Round(0.3 + (rand.NextDouble() * (9.3 - 0.7)), 2);
         }
 
         public static List<Target> MakeInstances()
