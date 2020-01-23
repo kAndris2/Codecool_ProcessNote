@@ -107,7 +107,7 @@ namespace ProcessNote
                                             "List Threads",
                                             "Get process info by PID",
                                             "Give comment to a process",
-                                            "Save" //Ezt csak online módban kell engedni!
+                                            "Save"
                                           };
             Console.WriteLine("[Main Menu]\n");
             for (int i = 0; i < menu.Count; i++)
@@ -120,7 +120,7 @@ namespace ProcessNote
         public static bool DisplayMenu(List<Target> processes)
         {
 
-            Console.WriteLine($"\nChoose an option to enter a menu:{processes.Count}");
+            Console.WriteLine("\nChoose an option to enter a menu:");
             string enter = Console.ReadLine();
             string FILENAME = "Test.xml";
             Console.Clear();
@@ -133,7 +133,7 @@ namespace ProcessNote
                 {
                     try
                     {
-                        Console.WriteLine("{0} | {1} | RAM: {2} | CPU: {3}", CorrectString(proc.ID.ToString(), 6), CorrectString(proc.Name, 40), CorrectString(proc.RAM.ToString(), 8), CorrectString(proc.CPU.ToString(), 5));
+                        Console.WriteLine("{0} | {1} | RAM: {2} | CPU: {3}", CorrectString(proc.ID.ToString(), 6), CorrectString(proc.Name, 40), CorrectString(proc.RAM.ToString(), 8), CorrectString(proc.CPU.ToString(), 8));
                     }
                     catch (Exception)
                     { }
@@ -255,9 +255,15 @@ namespace ProcessNote
 
         public static string CorrectString(string element, int num)
         {
+            bool check = false;
+            if (num == 8)
+                check = true;
             num -= element.Length;
+            if (check)
+                element += "%";
             for (int i = 0; i < num; i++)
                 element += " ";
+
             return element;
         }
 
