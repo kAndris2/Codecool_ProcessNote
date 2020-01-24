@@ -55,11 +55,8 @@ namespace ProcessNote
                         Console.Clear();
                     }
                 }
-                catch (KeyNotFoundException e)
-                {
-                    Console.Clear();
-                    Console.WriteLine("[ERROR]: " + e.Message);
-                }
+                catch (KeyNotFoundException e) { ManageEx(e.Message); }
+                catch (ArgumentException e) { ManageEx(e.Message); }
             }
         }
 
@@ -169,10 +166,12 @@ namespace ProcessNote
                 Console.WriteLine("Enter the process ID");
                 int pid = int.Parse(Console.ReadLine());
                 Console.Clear();
+                bool check = false;
                 foreach (Target proc in processes)
                 {
                     if (pid.Equals(proc.ID))
                     {
+                        check = true;
                         Console.WriteLine($"ID: {proc.ID}\n" +
                                       $"Name: {proc.Name}\n" +
                                       $"Runtime: {proc.Runtime}\n" +
@@ -184,6 +183,9 @@ namespace ProcessNote
                         break;
                     }
                 }
+
+                if (!check)
+                    throw new ArgumentException($"Invalid process ID! ('{pid}')\n");
                 
                 return true;
             }
@@ -318,6 +320,12 @@ namespace ProcessNote
             }
 
             return targets;
+        }
+
+        public static void ManageEx(string message)
+        {
+            Console.Clear();
+            Console.WriteLine("[ERROR]: " + message);
         }
     }
 }
